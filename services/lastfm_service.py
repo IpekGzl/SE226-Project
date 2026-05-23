@@ -60,18 +60,24 @@ class LastFmService:
 
         for tag in tags:
 
-            raw_tracks = self.fetch_tracks_by_tag(
-                tag,
-                requested_count
-            )
+            try:
 
-            for raw_track in raw_tracks:
-
-                track = self.convert_to_track_model(
-                    raw_track
+                raw_tracks = self.fetch_tracks_by_tag(
+                    tag,
+                    requested_count
                 )
 
-                all_tracks.append(track)
+                for raw_track in raw_tracks:
+
+                    track = self.convert_to_track_model(
+                        raw_track
+                    )
+
+                    all_tracks.append(track)
+
+            except Exception as error:
+
+                print(error)
 
         deduplicator = Deduplicator()
 
