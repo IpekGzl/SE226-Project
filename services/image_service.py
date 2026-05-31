@@ -1,6 +1,5 @@
 import io
 from urllib.parse import quote
-
 import requests
 from PIL import Image
 
@@ -14,12 +13,7 @@ from config import (
 
 class ImageService:
 
-    def build_cover_prompt(
-        self,
-        base_prompt: str,
-        genre: str
-    ) -> str:
-
+    def build_cover_prompt(self, base_prompt: str, genre: str) -> str:
         genre_styles = {
             "Pop": "vibrant pop album cover, colorful lighting",
             "Rock": "dark rock aesthetic, dramatic shadows",
@@ -33,27 +27,21 @@ class ImageService:
             "Klasik": "classical orchestral elegant artwork"
         }
 
-        style = genre_styles.get(
-            genre,
-            "modern album cover aesthetic"
-        )
+        style = genre_styles.get(genre, "modern album cover aesthetic")
 
-        final_prompt = f"""
-        album cover art,
-        {style},
-        {base_prompt},
-        highly detailed,
-        professional music album artwork,
-        square composition
-        """
+        # ÇOK KRİTİK DÜZELTME: Satır sonu ve başı boşlukları temizlemek için tek satıra indirgiyoruz
+        prompt_parts = [
+            "album cover art",
+            style,
+            base_prompt.strip(),
+            "highly detailed, professional music album artwork, square composition"
+        ]
 
-        return final_prompt.strip()
+        # Parçaları virgülle birleştirip içindeki gereksiz ekstra boşlukları ve yeni satırları temizliyoruz
+        final_prompt = ", ".join(prompt_parts)
+        return " ".join(final_prompt.split())
 
-    def generate_cover_image(
-        self,
-        prompt: str
-    ) -> Image.Image:
-
+    def generate_cover_image(self, prompt: str) -> Image.Image:
         encoded_prompt = quote(prompt)
 
         url = (
@@ -63,15 +51,8 @@ class ImageService:
             f"&nologo=true"
         )
 
-        response = requests.get(
-            url,
-            timeout=REQUEST_TIMEOUT
-        )
-
+        response = requests.get(url, timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
 
-        image = Image.open(
-            io.BytesIO(response.content)
-        ).convert("RGB")
-
+        image = Image.open(io.BytesIO(response.content)).convert("RGB")
         return image
