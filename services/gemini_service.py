@@ -8,7 +8,7 @@ from utils.json_cleaner import JsonCleaner
 
 class GeminiService:
     def __init__(self):
-        self.api_key = os.getenv("GEMINI_API_KEY")
+        self.api_key = os.getenv("")
 
         self.api_url = (
             "https://generativelanguage.googleapis.com/v1beta/models/"
